@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A little question 💗</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#fff8f0;--blush:#ffe3ea;--pink:#ff8fab;--rose:#e05780;--ink:#7a3a50;
+  color-scheme:light;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;height:100%;overflow:hidden;font-family:"Fredoka","Trebuchet MS",system-ui,sans-serif;
+  color:var(--ink);background:radial-gradient(circle at 50% 35%,#fff 0%,var(--cream) 45%,var(--blush) 100%);
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+main{position:relative;z-index:2;min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+.scene{max-width:780px;width:100%}
+h1{margin:0;font-weight:500;font-size:clamp(1.55rem,5.6vw,3.1rem);line-height:1.28;text-wrap:balance;letter-spacing:.01em}
+.row{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:clamp(28px,6vh,48px)}
+.btn{font:inherit;font-weight:600;font-size:clamp(1.05rem,3.6vw,1.3rem);border-radius:999px;cursor:pointer;
+  padding:.8em 2.3em;border:2px solid transparent;transition:transform .2s ease,box-shadow .2s ease}
+.btn:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+#yes{background:var(--pink);color:#fff;box-shadow:0 8px 22px rgba(255,143,171,.45);animation:beat 1.8s ease-in-out infinite}
+#yes:hover{transform:scale(1.06)}
+#yes:active{transform:scale(.97)}
+#no{background:#fff;color:var(--rose);border-color:var(--blush);box-shadow:0 4px 12px rgba(224,87,128,.12)}
+#no.free{position:fixed;z-index:5;margin:0;transition:left .38s cubic-bezier(.34,1.56,.64,1),top .38s cubic-bezier(.34,1.56,.64,1)}
+#ph{display:none}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+
+.thanks{display:none}
+.thanks.show{display:block;animation:pop .7s cubic-bezier(.34,1.56,.64,1) both}
+.thanks h1{font-size:clamp(2.2rem,9vw,4.6rem);font-weight:600;color:var(--rose)}
+.thanks p{margin:.9em 0 0;font-size:clamp(1.2rem,4.6vw,2rem);font-weight:500}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(20px)}to{opacity:1;transform:none}}
+
+#bg{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.h{position:absolute;bottom:-60px;color:var(--pink);opacity:0;animation:rise linear infinite}
+@keyframes rise{0%{transform:translate(0,0) rotate(-8deg);opacity:0}10%{opacity:var(--o)}
+  50%{transform:translate(18px,-55vh) rotate(8deg)}90%{opacity:var(--o)}100%{transform:translate(-12px,-115vh) rotate(-6deg);opacity:0}}
+.c{position:fixed;top:-30px;z-index:4;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translate(var(--dx),110vh) rotate(var(--r));opacity:.9}}
+@media (prefers-reduced-motion:reduce){#yes{animation:none}.h{animation-duration:0s;display:none}.c{display:none}}
+</style>
+</head>
+<body>
+<div id="bg" aria-hidden="true"></div>
+<main>
+  <section class="scene" id="ask">
+    <h1>SHECAINAH JANE, WILL YOU GO ON A FRIENDLY DATE WITH ME ON NOVEMBER 29, 2026?</h1>
+    <div class="row">
+      <button class="btn" id="yes" type="button">YES 💗</button>
+      <span id="ph"></span>
+      <button class="btn" id="no" type="button">NO</button>
+    </div>
+  </section>
+  <section class="scene thanks" id="thanks" aria-live="polite">
+    <h1>THANK YOU! 💗</h1>
+    <p>SEE YOU! DON’T GHOST ME PLS!</p>
+  </section>
+</main>
+<script>
+(function(){
+  var yes=document.getElementById('yes'), no=document.getElementById('no'), ph=document.getElementById('ph');
+  var ask=document.getElementById('ask'), thanks=document.getElementById('thanks'), bg=document.getElementById('bg');
+  var colors=['#ff8fab','#ffc2d1','#ffe3ea','#e05780','#ffd6a5','#fff'];
+  var moved=false, last=0, done=false;
+
+  function hearts(n,strong){
+    for(var i=0;i<n;i++){
+      var s=document.createElement('span'); s.className='h'; s.textContent='♥';
+      s.style.left=Math.random()*100+'%';
+      s.style.fontSize=(14+Math.random()*(strong?34:24))+'px';
+      s.style.color=colors[Math.floor(Math.random()*3)];
+      s.style.setProperty('--o',(.25+Math.random()*.35).toFixed(2));
+      s.style.animationDuration=(9+Math.random()*9)+'s';
+      s.style.animationDelay=(-Math.random()*14)+'s';
+      bg.appendChild(s);
+    }
+  }
+  hearts(16,false);
+
+  function dodge(){
+    if(done) return;
+    if(!moved){
+      var r=no.getBoundingClientRect();
+      ph.style.width=r.width+'px'; ph.style.height=r.height+'px'; ph.style.display='inline-block';
+      no.style.left=r.left+'px'; no.style.top=r.top+'px';
+      no.classList.add('free'); moved=true; void no.offsetWidth;
+    }
+    var w=no.offsetWidth,h=no.offsetHeight,pad=12,vw=window.innerWidth,vh=window.innerHeight;
+    var y=yes.getBoundingClientRect(), cur=no.getBoundingClientRect(), best=null;
+    for(var i=0;i<50;i++){
+      var x=pad+Math.random()*Math.max(0,vw-w-2*pad), t=pad+Math.random()*Math.max(0,vh-h-2*pad);
+      var hitsYes=x<y.right+24&&x+w>y.left-24&&t<y.bottom+24&&t+h>y.top-24;
+      if(hitsYes) continue;
+      var far=Math.hypot(x-cur.left,t-cur.top)>Math.min(vw,vh)*.3;
+      if(far){best=[x,t];break;}
+      if(!best) best=[x,t];
+    }
+    best=best||[pad,pad];
+    no.style.left=best[0]+'px'; no.style.top=best[1]+'px';
+  }
+
+  function stop(e){ if(e.cancelable) e.preventDefault(); dodge(); }
+  no.addEventListener('pointerenter',dodge);
+  no.addEventListener('pointerdown',stop);
+  no.addEventListener('touchstart',stop,{passive:false});
+  no.addEventListener('mousedown',stop);
+  no.addEventListener('click',stop);
+  no.addEventListener('focus',function(){dodge();no.blur();});
+  document.addEventListener('pointermove',function(e){
+    if(e.pointerType==='touch'||done) return;
+    var now=Date.now(); if(now-last<180) return;
+    var r=no.getBoundingClientRect(), m=70;
+    if(e.clientX>r.left-m&&e.clientX<r.right+m&&e.clientY>r.top-m&&e.clientY<r.bottom+m){last=now;dodge();}
+  });
+  window.addEventListener('resize',function(){ if(moved) dodge(); });
+
+  function confetti(){
+    var shapes=['♥','●','■','♥'];
+    for(var i=0;i<110;i++){
+      var c=document.createElement('span'); c.className='c';
+      var heart=Math.random()<.4;
+      c.textContent=heart?'♥':'';
+      c.style.left=Math.random()*100+'vw';
+      c.style.color=colors[Math.floor(Math.random()*colors.length)];
+      if(heart){c.style.fontSize=(14+Math.random()*20)+'px';}
+      else{var s=6+Math.random()*8;c.style.width=s+'px';c.style.height=(s*1.5)+'px';c.style.borderRadius='2px';
+        c.style.background=colors[Math.floor(Math.random()*5)];}
+      c.style.setProperty('--dx',(Math.random()*160-80)+'px');
+      c.style.setProperty('--r',(Math.random()*900-450)+'deg');
+      c.style.animationDuration=(2.6+Math.random()*2.4)+'s';
+      c.style.animationDelay=(Math.random()*.9)+'s';
+      document.body.appendChild(c);
+      setTimeout((function(el){return function(){el.remove();};})(c),7000);
+    }
+  }
+
+  yes.addEventListener('click',function(){
+    done=true;
+    ask.style.display='none'; no.style.display='none'; ph.style.display='none';
+    thanks.classList.add('show');
+    hearts(22,true);
+    confetti();
+    setTimeout(confetti,1400);
+  });
+})();
+</script>
+</body>
+</html>
